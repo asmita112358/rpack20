@@ -1,0 +1,12 @@
+Package: AsCovar
+Type: Package
+Title: Fast algorithm for distance covariance
+Version: 1.0
+Date: 2019-11-18
+Authors@R: person(given = "Asmita", family = "Roy", role = c("aut", "cre"), email = "asmita112358@gmail.com")
+Description: Computes distance . It also does other things.
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.2)
+LinkingTo: Rcpp, RcppArmadillo
+Encoding: UTF-8
+RoxygenNote: 7.0.0
