@@ -27,3 +27,18 @@ test1 = function(z, y)
 {
   return(z + y)
 }
+
+
+#' Title
+#'
+#' @param x 
+#' @param y 
+#'
+#' @return the product of 
+#' @export
+#'
+#' @examples
+test2 =function(x,y)
+{
+  return(x*y)
+}
