@@ -7,9 +7,6 @@
 using namespace Rcpp;
 using namespace arma;
 // [[Rcpp::export]]
-
-
-
 double d_cov(  arma::vec x, arma::vec y, double N)
   {
   int n = x.size();

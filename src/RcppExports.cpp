@@ -49,14 +49,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// timesTwo
-NumericVector timesTwo(NumericVector x);
-RcppExport SEXP _AsCovar_timesTwo(SEXP xSEXP) {
+// d_cov
+double d_cov(arma::vec x, arma::vec y, double N);
+RcppExport SEXP _AsCovar_d_cov(SEXP xSEXP, SEXP ySEXP, SEXP NSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type N(NSEXP);
+    rcpp_result_gen = Rcpp::wrap(d_cov(x, y, N));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -66,7 +68,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_AsCovar_rcpparma_outerproduct", (DL_FUNC) &_AsCovar_rcpparma_outerproduct, 1},
     {"_AsCovar_rcpparma_innerproduct", (DL_FUNC) &_AsCovar_rcpparma_innerproduct, 1},
     {"_AsCovar_rcpparma_bothproducts", (DL_FUNC) &_AsCovar_rcpparma_bothproducts, 1},
-    {"_AsCovar_timesTwo", (DL_FUNC) &_AsCovar_timesTwo, 1},
+    {"_AsCovar_d_cov", (DL_FUNC) &_AsCovar_d_cov, 3},
     {NULL, NULL, 0}
 };
 

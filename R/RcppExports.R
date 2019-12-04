@@ -17,7 +17,7 @@ rcpparma_bothproducts <- function(x) {
     .Call('_AsCovar_rcpparma_bothproducts', PACKAGE = 'AsCovar', x)
 }
 
-timesTwo <- function(x) {
-    .Call('_AsCovar_timesTwo', PACKAGE = 'AsCovar', x)
+d_cov <- function(x, y, N) {
+    .Call('_AsCovar_d_cov', PACKAGE = 'AsCovar', x, y, N)
 }
 

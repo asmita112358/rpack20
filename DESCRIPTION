@@ -1,12 +1,12 @@
 Package: AsCovar
 Type: Package
-Title: Fast algorithm for distance covariance
+Title: Fast algorithm for distance covariance and tests for homogeneity based on RKHS embedding
 Version: 1.0
 Date: 2019-11-18
 Authors@R: person(given = "Asmita", family = "Roy", role = c("aut", "cre"), email = "asmita112358@gmail.com")
-Description: Computes distance . It also does other things.
+Description: Computes distance covariance between two vectors. It also tests for homogeneity of two distributions.
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.2)
+Imports: Rcpp (>= 1.0.2), CVXR, MASS, mvtnorm, kernlab, reticulate, stats
 LinkingTo: Rcpp, RcppArmadillo
 Encoding: UTF-8
 RoxygenNote: 7.0.0

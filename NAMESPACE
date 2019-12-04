@@ -1,6 +1,10 @@
 useDynLib(AsCovar)
 importFrom(Rcpp, evalCpp)
 
-export(test)
-export(test1)
-import(CVXR)
+
+import(MASS)
+import(mvtnorm)
+import(reticulate)
+export(optkern)
+export(d_covR)
+import(stats)
