@@ -1,9 +1,16 @@
+
+packages <- c("MASS", "mvtnorm", "reticulate", "CVXR", "kernlab")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())))  
+}
+
 library(MASS)
 library(mvtnorm)
 library(reticulate)
 library(CVXR)
 library(kernlab)
 
+## This function calculates the kernel
 phi = function(theta, x)
 {
   d = length(x)
@@ -12,6 +19,7 @@ phi = function(theta, x)
   return( sqrt(2)*cos(sum(w*x)+2*pi*b) )
 }
 
+## This function calculates the U statistic, which is based on the Kernel function phi
 psi = function(VX, VY)
 { 
   n = length(VX)
@@ -21,7 +29,9 @@ psi = function(VX, VY)
   out = T1 + T2 - 2*T3
   return( out )
 }
-
+##computes the test statistics based on on inputs which are some functions of the data
+##This function's main job is to perform the optimization that obtains the optimal kernel.
+#Dr. Zhang asked me to use the package CVXR for this particular optimization
 test = function(theta, Bsi, ps)
 {
   N = dim(theta)[1]
@@ -55,9 +65,12 @@ test = function(theta, Bsi, ps)
 #' @export
 #'
 #' @examples
+#' Z = optkern(X,Y, alpha = 0.01).The null hypothesis is the that the distribution of X and Y are equal.
 optkern = function(X, Y, N, alfa = 0.05)
 {
-  #Generating theta, the base distribution for the monte carlo estimation
+  #Generating theta, the base distribution for the monte carlo estimation. 
+  #Here we take the distribution of theta as uniform. 
+  #Further research is ongoing about whether there's any way to fine tune this choice.
   Hi = 0.35
   Lo = -Hi
   w = matrix(runif(N*d, min=Lo, max=Hi), N, d)
@@ -69,6 +82,7 @@ optkern = function(X, Y, N, alfa = 0.05)
   ps = rep(NA, N)
   psiX = matrix(NA, n, N) 
   psiY = matrix(NA, n, N)
+  #in this loop we apply the kernel function on the data points.
   for(i in 1:N)
   {
     #print("got in loop")
@@ -77,20 +91,30 @@ optkern = function(X, Y, N, alfa = 0.05)
     psiY[,i] = apply(Y, 1, phi, theta = theta[i,])
     ps[i] = psi(psiX[,i], psiY[,i])/q[i]
   }
+  #centering the kernelled data
   dpsiX = t(t(psiX) - colMeans(psiX))
   dpsiY = t(t(psiY) - colMeans(psiY))
+  #Estimating the Sigma Matrix
   Sig = (crossprod(dpsiX) + crossprod(dpsiY))/(n+n-2)
   Qinv = diag(1/q) 
   
+  #Construct the B matrix in the process, perform spectral analysis of B, to be used in later steps
   C = 2*(1/n/(n-1) + 1/n/(n-1) + 2/n/n)
   B = C*Qinv%*%(Sig*Sig)%*%Qinv
   eB = eigen(B)
   ev = eB$values
   ev[ev<0] =  min(ev[ev>0])
   Bsi = eB$vectors%*%diag(1/sqrt(ev))%*%t(eB$vectors)
+  #Call the test function with entries 
+  #1.theta, which is a random sample from the base distribution 
+  #2. Bsi, ps: matrices and vectors computed halfway through the process
+  #I'm sorry if this part is difficult to understand, the theory is way too complicated here and the steps don't have any name because the research procedure is still going on.
   stat = test(theta, Bsi, ps)
   
   data = rbind(psiX, psiY)
+  #performing permutation test with the available data with 100 replications.
+
+  
   stat.per = rep(NA, 100)
   for(ii in 1:100)
   {
@@ -108,7 +132,10 @@ optkern = function(X, Y, N, alfa = 0.05)
   } 
   
   stat.per = stat.per[!is.na(stat.per)]
+  
+  #obtaining the critical value by selecting the (1-alpha)-th quantile.
   crit = quantile(stat.per, 1 - alfa)
+  #if the test statistics is greater than the critical value the null hypothesis is rejected.
   d = stat > crit
   return(list(teststat = stat, criticalvalue = crit, decision = d))
 }
