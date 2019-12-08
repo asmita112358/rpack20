@@ -77,6 +77,14 @@ optkern = function(X, Y, N, alfa = 0.05)
   theta = cbind(w, runif(N))
   q = rep(1/2/Hi, N)
   
+  ##Performing checks on the data:
+  if(dim(X) != dim(Y))
+    stop(print("X and Y should have same number of rows and columns"))
+  if(nrow(X)<ncol(X))
+    stop(print("Number of samples must be larger than the length of each sample"))
+  if(alfa >1 || alfa <0)
+    stop(print("size of the test must lie between zero and one"))
+  
   stat = 0
   n = length(X) 
   ps = rep(NA, N)
